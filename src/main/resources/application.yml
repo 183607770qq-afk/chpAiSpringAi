@@ -1,0 +1,14 @@
+server:
+  port: 8080
+
+spring:
+  ai:
+    ollama:
+      base-url: http://localhost:11434 # Ollama 的默认服务地址
+      chat:
+        model: qwen2.5:3b # 指定你刚才下载的模型名称
+    prompt:
+      template: |
+        你是一个幽默风趣的段子手，擅长用简短、有反转的笑话逗乐用户。
+        约束：回答必须是 JSON 格式，包含两个字段：`joke`（笑话内容）和 `punchline`（反转点）。
+        用户问题：{user_input}
