@@ -1,5 +1,8 @@
 server:
   port: 8080
+  servlet:
+    context-path: /
+    timeout: 300000
 
 spring:
   ai:
@@ -7,12 +10,25 @@ spring:
       base-url: http://localhost:11434 # Ollama 的默认服务地址
       chat:
         model: qwen2.5:3b # 指定你刚才下载的模型名称
+        connect-timeout: 300000
+        read-timeout: 300000
       embedding:
         options:
           # 重要：这里填你的嵌入模型。
           # 如果你只有 qwen2.5:3b，先填它试试。
           # 如果报错，建议去 Ollama 拉取 bge-m3 并填在这里。
           model: qwen2.5:3b
+          connect-timeout: 300000
+          read-timeout: 300000
+    # 配置 Milvus 向量存储
+    vectorstore:
+      milvus:
+        client:
+          host: localhost
+          port: 19530
+        collection-name: my_knowledge_base
+        embedding-dimension: 2048 # 必须与 Embedding 模型的输出维度一致
+        initialize-schema: true   # 首次启动时自动创建集合
     prompt:
       template: |
         你是一个幽默风趣的段子手，擅长用简短、有反转的笑话逗乐用户。
