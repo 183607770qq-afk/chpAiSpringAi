@@ -1,5 +1,6 @@
 package com.chp.chpaispringai.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.client.advisor.RetrievalAugmentationAdvisor;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class RAGService {
     private final ChatClient chatClient;
     private final VectorStore vectorStore;  // 核心：Spring AI 会自动注入 Milvus 实现
@@ -108,5 +110,18 @@ public class RAGService {
                         .topK(1000)
                         .build()
         ).size();
+    }
+
+    public String searchContext(String query) {
+        // 1. 向量相似度检索
+        List<Document> docs = vectorStore.similaritySearch(query);
+
+        // 2. 用lambda+getText() 100%兼容，无类型问题
+        return docs.stream()
+                .map(doc -> doc.getText()) // 替代getContent()，适配1.0+新API
+                .collect(Collectors.joining("\n---\n"));
+    }
+    public void addKnowledge(String content) {
+        vectorStore.add(List.of(new Document(content)));
     }
 }

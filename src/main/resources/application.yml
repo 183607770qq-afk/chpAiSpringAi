@@ -6,12 +6,27 @@ server:
 
 spring:
   ai:
+#    zhipuai:
+#      api-key: ${ZHIPU_API_KEY}  # 从环境变量读取
+#      chat:
+#        model: GLM-4.7-Flash    # 省钱选flash，速度快
+#        temperature: 0.7
+#        connect-timeout: 300000
+#        read-timeout: 600000
+#      embedding:
+#        options:
+#          # 重要：这里填你的嵌入模型。
+#          # 如果你只有 qwen2.5:3b，先填它试试。
+#          # 如果报错，建议去 Ollama 拉取 bge-m3 并填在这里。
+#          model: GLM-4.7-Flash
+#          connect-timeout: 300000
+#          read-timeout: 600000
     ollama:
       base-url: http://localhost:11434 # Ollama 的默认服务地址
       chat:
         model: qwen2.5:3b # 指定你刚才下载的模型名称
         connect-timeout: 300000
-        read-timeout: 300000
+        read-timeout: 600000
       embedding:
         options:
           # 重要：这里填你的嵌入模型。
@@ -19,7 +34,7 @@ spring:
           # 如果报错，建议去 Ollama 拉取 bge-m3 并填在这里。
           model: qwen2.5:3b
           connect-timeout: 300000
-          read-timeout: 300000
+          read-timeout: 600000
     # 配置 Milvus 向量存储
     vectorstore:
       milvus:
@@ -28,7 +43,9 @@ spring:
           port: 19530
         collection-name: my_knowledge_base
         embedding-dimension: 2048 # 必须与 Embedding 模型的输出维度一致
-        initialize-schema: true   # 首次启动时自动创建集合
+#        initialize-schema: true   # 首次启动时自动创建集合
+        # ⚠️ 关键：改为 false，关闭自动初始化，避免死锁
+        initialize-schema: false
     prompt:
       template: |
         你是一个幽默风趣的段子手，擅长用简短、有反转的笑话逗乐用户。
